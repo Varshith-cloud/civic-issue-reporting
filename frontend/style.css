@@ -1,0 +1,72 @@
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f4f6f8;
+  margin: 0;
+  padding: 20px;
+}
+
+h2, h3 {
+  margin-top: 0;
+}
+
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #007bff;
+  color: white;
+  margin: 4px 4px 4px 0;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+.logout-btn {
+  background: #dc3545;
+}
+
+.logout-btn:hover {
+  background: #b52a37;
+}
+
+.card {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 15px 0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.metrics {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: white;
+}
+
+.pending {
+  background: orange;
+}
+
+.progress {
+  background: #17a2b8;
+}
+
+.solved {
+  background: green;
+}
+
+img {
+  border-radius: 8px;
+  margin-top: 8px;
+}

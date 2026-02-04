@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>User Dashboard | Civic Report</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(120deg, #eef5ff, #f9fbff);
+      min-height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 40px;
+      background: white;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #2563eb;
+    }
+
+    .logo span {
+      background: #2563eb;
+      color: white;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+    }
+
+    .header-buttons button {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      margin-left: 10px;
+    }
+
+    .myissues { background: #2563eb; color: white; }
+    .logout { background: #ef4444; color: white; }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      padding: 60px 20px;
+    }
+
+    .card {
+      background: white;
+      width: 520px;
+      padding: 35px 40px;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 18px;
+      border-radius: 10px;
+      border: 1.5px solid #cbd5e1;
+      font-size: 14px;
+    }
+
+    textarea {
+      height: 100px;
+      resize: none;
+    }
+
+    .file-box {
+      border: 2px dashed #cbd5e1;
+      padding: 16px;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="header">
+  <div class="logo"><span>🏙️</span> Civic Report</div>
+  <div class="header-buttons">
+    <button class="myissues" onclick="location.href='/my-issues.html'">
+      📌 My Issues
+    </button>
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<div class="container">
+  <div class="card">
+    <h2>📢 Report a Civic Issue</h2>
+
+    <form id="issueForm" enctype="multipart/form-data">
+      <label>Issue Title</label>
+      <input name="title" required>
+
+      <label>Description</label>
+      <textarea name="description" required></textarea>
+
+      <label>Area / Location</label>
+      <textarea name="location" required
+        placeholder="Eg: Krishna Lanka, Vijayawada"></textarea>
+
+      <label>Category</label>
+      <select name="category" required>
+        <option value="">Select category</option>
+        <option>Road</option>
+        <option>Water</option>
+        <option>Electricity</option>
+        <option>Garbage</option>
+        <option>Street Light</option>
+      </select>
+
+      <div class="file-box">
+        Upload Image (optional)
+        <input type="file" name="image">
+      </div>
+
+      <button class="submit-btn">Submit Issue</button>
+    </form>
+  </div>
+</div>
+
+<script>
+const email = localStorage.getItem("email");
+
+if (!email) {
+  alert("Session expired. Please login again.");
+  window.location.href = "/user/user-login.html";
+}
+
+document.getElementById("issueForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+  formData.append("email", email);
+
+  try {
+    const res = await fetch("/report", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Issue submission failed");
+      return;
+    }
+
+    alert("✅ Issue reported successfully!");
+    e.target.reset();
+
+  } catch (err) {
+    alert("❌ Server not responding");
+  }
+});
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "/";
+}
+</script>
+
+
+</body>
+</html>

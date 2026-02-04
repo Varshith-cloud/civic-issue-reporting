@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Government Login | Civic Report</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(120deg, #e8f5e9, #f3f6fb);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ================= CARD ================= */
+    .card {
+      background: white;
+      padding: 35px 30px;
+      border-radius: 22px;
+      width: 360px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+      animation: slideFade 0.7s ease;
+    }
+
+    @keyframes slideFade {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* ================= TITLE ================= */
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #14532d;
+      font-size: 24px;
+    }
+    .password-box {
+  position: relative;
+}
+
+.toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+}
+
+
+    /* ================= INPUTS ================= */
+    input {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 18px;
+      border-radius: 14px;
+      border: 1.5px solid #cbd5e1;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    input:focus {
+      border-color: #15803d;
+      box-shadow: 0 0 0 4px rgba(21,128,61,0.2);
+      transform: scale(1.02);
+    }
+
+    /* ================= BUTTON ================= */
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #15803d, #22c55e);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(21,128,61,0.45);
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>🏛️ Government Login</h2>
+
+  <input id="email" type="email" placeholder="Government Email" required>
+  <div class="password-box">
+  <input id="password" type="password" required>
+  <span class="toggle" onclick="togglePassword()">👁️</span>
+</div>
+
+
+  <button onclick="login()">Sign In</button>
+</div>
+
+<script>
+async function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const res = await fetch("/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email,
+      password,
+      role: "government"
+    })
+  });
+
+  if (res.ok) {
+    window.location.href = "/government/gov-dashboard.html";
+  } else {
+    alert("Invalid government credentials");
+  }
+}
+function togglePassword() {
+  const passwordInput = document.getElementById("password");
+
+  if (passwordInput.type === "password") {
+    passwordInput.type = "text";
+  } else {
+    passwordInput.type = "password";
+  }
+}
+
+</script>
+
+</body>
+</html>

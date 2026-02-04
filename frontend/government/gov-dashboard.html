@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Government Dashboard</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: #f1f5f9;
+    }
+
+    h1 {
+      padding: 20px 40px;
+      margin: 0;
+    }
+
+    /* ===== FILTER BUTTONS ===== */
+    .filters {
+      padding: 10px 40px;
+    }
+
+    .filters button {
+      padding: 10px 18px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      color: white;
+      transition: 0.3s;
+    }
+
+    .all { background: #2563eb; }
+    .pending { background: #f59e0b; }
+    .solved { background: #16a34a; }
+
+    .filters button:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+
+    /* ===== ISSUE CARDS ===== */
+    .container {
+      padding: 30px 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 25px;
+    }
+
+    .issue-card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      animation: fadeUp 0.5s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .issue-card h3 {
+      margin-top: 0;
+      color: #0f172a;
+    }
+
+    .status {
+      font-weight: 700;
+    }
+
+    .Pending { color: #f59e0b; }
+    .Solved { color: #16a34a; }
+
+    /* ===== IMAGE SIZE (SAME AS USER PAGE) ===== */
+    .issue-card img {
+      width: 100%;
+      max-width: 350px;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-top: 10px;
+      background: #e5e7eb;
+    }
+
+    /* ===== ACTION BUTTON ===== */
+    .solve-btn {
+      margin-top: 12px;
+      padding: 10px 16px;
+      background: #16a34a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .solve-btn:hover {
+      transform: scale(1.05);
+      background: #15803d;
+    }
+
+    /* ===== TOP ACTIONS ===== */
+    .top-actions {
+      position: fixed;
+      right: 30px;
+      top: 25px;
+    }
+
+    .top-actions button {
+      padding: 8px 14px;
+      margin-left: 10px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .back { background: #64748b; color: white; }
+    .logout { background: #ef4444; color: white; }
+
+    .top-actions button:hover {
+      opacity: 0.9;
+    }
+    .stats {
+  display: flex;
+  gap: 20px;
+  padding: 20px 40px;
+}
+
+.stat-card {
+  flex: 1;
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  animation: fadeIn 0.6s ease;
+}
+
+.stat-card h2 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.total { border-left: 6px solid #2563eb; }
+.pending { border-left: 6px solid #f59e0b; }
+.solved { border-left: 6px solid #16a34a; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.75);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 12px;
+  animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.7); }
+  to { transform: scale(1); }
+}
+
+
+  </style>
+</head>
+
+<body>
+
+<h1>🏛 Government Dashboard</h1>
+<div class="stats">
+  <div class="stat-card total">
+    <h2 id="totalCount">0</h2>
+    <p>Total Issues</p>
+  </div>
+
+  <div class="stat-card pending">
+    <h2 id="pendingCount">0</h2>
+    <p>Pending</p>
+  </div>
+
+  <div class="stat-card solved">
+    <h2 id="solvedCount">0</h2>
+    <p>Solved</p>
+  </div>
+</div>
+
+
+<div class="top-actions">
+  <button class="back" onclick="goBack()">Back</button>
+  <button class="logout" onclick="logout()">Logout</button>
+</div>
+
+<div class="filters">
+  <button class="all" onclick="filterIssues('All')">All</button>
+  <button class="pending" onclick="filterIssues('Pending')">Pending</button>
+  <button class="solved" onclick="filterIssues('Solved')">Solved</button>
+</div>
+
+<div class="container" id="issues"></div>
+
+<script>
+let allIssues = [];
+
+async function loadIssues() {
+  const res = await fetch("/gov/issues");
+  allIssues = await res.json();
+
+  // 🔢 COUNTERS
+  document.getElementById("totalCount").innerText = allIssues.length;
+  document.getElementById("pendingCount").innerText =
+    allIssues.filter(i => i.status === "Pending").length;
+  document.getElementById("solvedCount").innerText =
+    allIssues.filter(i => i.status === "Solved").length;
+
+  renderIssues(allIssues);
+}
+
+
+function renderIssues(list) {
+  const box = document.getElementById("issues");
+  box.innerHTML = "";
+
+  list.forEach(issue => {
+
+  box.innerHTML += `
+    <div class="issue-card">
+      <h3>${issue.title}</h3>
+
+      <p>${issue.description}</p>
+      <p><b>Location:</b> ${issue.location || "Not provided"}</p>
+      <p><b>Category:</b> ${issue.category}</p>
+
+      <p><b>Date:</b> ${new Date(issue.createdAt).toLocaleString()}</p>
+
+      <p><b>Status:</b> ${issue.status}</p>
+
+${issue.image ? `
+  <img src="/uploads/${issue.image}"
+       onclick="openModal('/uploads/${issue.image}')"
+       onerror="this.remove()"  
+       style="cursor:pointer;" />
+` : ""}
+
+      ${
+        issue.status === "Pending"
+          ? `
+            ${
+  issue.status === "Pending"
+    ? `
+      <button class="solve-btn"
+              onclick="markSolved('${issue._id}')">
+        Mark as Solved
+      </button>
+    `
+    : `
+      <p class="status Solved"><b>Solved</b></p>
+    `
+}
+
+          `
+          : `
+          `
+      }
+    </div>
+  `;
+});
+
+}
+function showCommentBox(id) {
+  document.getElementById("comment-box-" + id).style.display = "block";
+}
+
+async function submitSolution(id) {
+  const comment = document.getElementById("comment-" + id).value;
+
+  if (comment.trim() === "") {
+    alert("Please type a comment first");
+    return;
+  }
+
+  await fetch("/gov/issue/" + id, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      status: "Solved",
+      comment: comment
+    })
+  });
+
+  loadIssues(); // reload from database
+}
+
+
+
+function filterIssues(type) {
+  if (type === "All") {
+    renderIssues(allIssues);
+  } else {
+    renderIssues(allIssues.filter(i => i.status === type));
+  }
+}
+
+async function markSolved(id) {
+  await fetch(`/gov/issue/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status: "Solved" })
+  });
+  loadIssues();
+}
+
+function goBack() {
+  window.history.back();
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "/";
+}
+function openModal(src) {
+  document.getElementById("modalImage").src = src;
+  document.getElementById("imageModal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("imageModal").style.display = "none";
+}
+
+
+loadIssues();
+</script>
+<div id="imageModal" class="modal" onclick="closeModal()">
+  <img id="modalImage">
+</div>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Solved Issues</title>
+</head>
+<body>
+
+<h2>✅ Solved Issues</h2>
+<div id="list"></div>
+
+<script>
+fetch("/issues")
+  .then(res => res.json())
+  .then(issues => {
+    const solved = issues.filter(i => i.status === "Solved");
+    const list = document.getElementById("list");
+
+    if (solved.length === 0) {
+      list.innerHTML = "No solved issues yet.";
+      return;
+    }
+
+    solved.forEach(i => {
+      list.innerHTML += `<p>✔ ${i.title}</p>`;
+    });
+  });
+</script>
+
+</body>
+</html>

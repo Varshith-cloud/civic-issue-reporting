@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Government Officer Signup | Civic Report</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(120deg, #eef5ff, #f9fbff);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .signup-card {
+      background: white;
+      width: 420px;
+      padding: 35px 40px;
+      border-radius: 18px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+    }
+
+    .signup-card h1 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      color: #0f172a;
+      font-size: 28px;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #64748b;
+      margin-bottom: 30px;
+      font-size: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #334155;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 18px;
+      border-radius: 8px;
+      border: 1.5px solid #cbd5e1;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #16a34a;
+      box-shadow: 0 0 0 3px rgba(22,163,74,0.15);
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      background: #f8fafc;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #16a34a;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #15803d;
+    }
+
+    .note {
+      margin-top: 18px;
+      font-size: 13px;
+      color: #64748b;
+      text-align: center;
+    }
+
+    .note span {
+      color: #16a34a;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="signup-card">
+    <h1>🏛 Government Officer Signup</h1>
+    <div class="subtitle">
+      Register using official credentials
+    </div>
+
+    <form id="govSignupForm" enctype="multipart/form-data">
+
+      <label>Officer Name</label>
+      <input type="text" name="name" placeholder="Enter full name" required>
+
+      <label>Email</label>
+      <input type="email" name="email" placeholder="official@email.gov" required>
+
+      <label>Password</label>
+      <input type="password" name="password" placeholder="Create a strong password" required>
+
+      <label>Government Enrollment ID</label>
+      <input type="text" name="govId" placeholder="Eg: GOV-12345" required>
+
+      <label>Upload Government Proof</label>
+      <input type="file" name="proof" required>
+
+      <button type="submit">Sign Up</button>
+    </form>
+
+    <div class="note">
+      Only <span>authorized government officers</span> can access the dashboard.
+    </div>
+  </div>
+
+</body>
+</html>
