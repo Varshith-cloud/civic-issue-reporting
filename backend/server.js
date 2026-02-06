@@ -10,17 +10,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /* ================== STATIC FILES ================== */
-
+const frontendPath = path.join(__dirname, "..", "frontend");
+app.use(express.static(frontendPath));
 
 // serve uploaded images
 app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 
 /* ================== DATABASE ================== */
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect("mongodb://127.0.0.1:27017/civic_issues")
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error(err));
-
 
 /* ================== MODELS ================== */
 const UserSchema = new mongoose.Schema(
@@ -158,3 +158,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
